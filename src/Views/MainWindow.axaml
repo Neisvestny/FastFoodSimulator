@@ -1,0 +1,304 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:FastFoodSimulator.ViewModels"
+        x:Class="FastFoodSimulator.Views.MainWindow"
+        x:DataType="vm:MainViewModel"
+        Title="Fast Food Simulator"
+        MinWidth="1000" MinHeight="700"
+        WindowState="Maximized"
+        Background="#FFFFFF">
+
+    <Grid RowDefinitions="Auto,Auto,4*,1*" Margin="12" RowSpacing="10">
+
+        <!-- ввод настроек -->
+        <Border Grid.Row="0" Background="#F7F7FA" BorderBrush="#E2E2E8" BorderThickness="1" CornerRadius="8" Padding="14">
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
+
+                <Grid Grid.Column="0"
+                      ColumnDefinitions="Auto,*,Auto,*,Auto,*,Auto,*,Auto,*,Auto,*,Auto,*,Auto"
+                      ColumnSpacing="12"
+                      IsEnabled="{Binding !IsRunning}">
+
+                <StackPanel Grid.Column="0" Spacing="4">
+                    <TextBlock Text="Приход клиентов, мс" Foreground="#5A5A68"/>
+                    <TextBox Width="110" Text="{Binding CustomerArrivalInterval}"/>
+                    <TextBlock Text="{Binding CustomerArrivalError}" Foreground="#D32F2F" FontSize="11"
+                               TextWrapping="Wrap" MaxWidth="120"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="2" Spacing="4">
+                    <TextBlock Text="Приём заказа, мс" Foreground="#5A5A68"/>
+                    <TextBox Width="110" Text="{Binding OrderTakingInterval}"/>
+                    <TextBlock Text="{Binding OrderTakingError}" Foreground="#D32F2F" FontSize="11" TextWrapping="Wrap" MaxWidth="120"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="4" Spacing="4">
+                    <TextBlock Text="Приготовление, мс" Foreground="#5A5A68"/>
+                    <TextBox Width="110" Text="{Binding CookingInterval}"/>
+                    <TextBlock Text="{Binding CookingError}" Foreground="#D32F2F" FontSize="11" TextWrapping="Wrap" MaxWidth="120"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="6" Spacing="4">
+                    <TextBlock Text="Выдача заказа, мс" Foreground="#5A5A68"/>
+                    <TextBox Width="110" Text="{Binding ServingInterval}"/>
+                    <TextBlock Text="{Binding ServingError}" Foreground="#D32F2F" FontSize="11" TextWrapping="Wrap" MaxWidth="120"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="8" Spacing="4">
+                    <TextBlock Foreground="#5A5A68">
+                        <Run Text="Кассиры"/><Run Text="(1–5)" Foreground="#8A8A98"/>
+                    </TextBlock>
+                    <TextBox Width="110" Text="{Binding CashierCount}"/>
+                    <TextBlock Text="{Binding CashierCountError}" Foreground="#D32F2F" FontSize="11" TextWrapping="Wrap" MaxWidth="120"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="10" Spacing="4">
+                    <TextBlock Foreground="#5A5A68">
+                        <Run Text="Повара"/><Run Text="(1–5)" Foreground="#8A8A98"/>
+                    </TextBlock>
+                    <TextBox Width="110" Text="{Binding CookCount}"/>
+                    <TextBlock Text="{Binding CookCountError}" Foreground="#D32F2F" FontSize="11" TextWrapping="Wrap" MaxWidth="120"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="12" Spacing="4">
+                    <TextBlock Foreground="#5A5A68">
+                        <Run Text="Официанты (выдача)"/><Run Text="(1–5)" Foreground="#8A8A98"/>
+                    </TextBlock>
+                    <TextBox Width="110" Text="{Binding ServerCount}"/>
+                    <TextBlock Text="{Binding ServerCountError}" Foreground="#D32F2F" FontSize="11" TextWrapping="Wrap" MaxWidth="120"/>
+                </StackPanel>
+
+                </Grid>
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                    <Button Content="▶ Старт" Command="{Binding StartCommand}" Padding="20,10"/>
+                    <Button Content="■ Стоп" Command="{Binding StopCommand}" Padding="20,10"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- панели состояния -->
+        <Grid Grid.Row="1" ColumnDefinitions="*,*,*,*" ColumnSpacing="10">
+
+            <!-- Линия клиентов -->
+            <Border Grid.Column="0" Background="#F7F7FA" BorderBrush="#E2E2E8" BorderThickness="1" CornerRadius="8" Padding="12">
+                <StackPanel Spacing="6">
+                    <TextBlock Text="ЛИНИЯ КЛИЕНТОВ" FontWeight="Bold" Foreground="#1A73E8"/>
+                    <TextBlock Text="Ждут возможности заказать:" Foreground="#5A5A68" FontSize="12"/>
+                    <TextBlock Text="{Binding CustomersWaiting}" FontSize="28" FontWeight="Bold" Foreground="#1B1B22"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Приём заказов -->
+            <Border Grid.Column="1" Background="#F7F7FA" BorderBrush="#E2E2E8" BorderThickness="1" CornerRadius="8" Padding="12">
+                <StackPanel Spacing="6">
+                    <TextBlock Text="ПРИЁМ ЗАКАЗОВ" FontWeight="Bold" Foreground="#1A73E8"/>
+                    <TextBlock Text="{Binding CashiersHeader}" Foreground="#5A5A68" FontSize="12"/>
+                    <TextBlock Text="{Binding TakingOrderText}" FontSize="22" FontWeight="Bold" Foreground="#1B1B22"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Кухня -->
+            <Border Grid.Column="2" Background="#F7F7FA" BorderBrush="#E2E2E8" BorderThickness="1" CornerRadius="8" Padding="12">
+                <StackPanel Spacing="6">
+                    <TextBlock Text="КУХНЯ" FontWeight="Bold" Foreground="#1A73E8"/>
+                    <TextBlock Text="{Binding CooksHeader}" Foreground="#5A5A68" FontSize="12"/>
+                    <TextBlock Text="{Binding PreparingOrderText}" FontSize="20" FontWeight="Bold" Foreground="#C77700"/>
+                    <TextBlock Text="{Binding KitchenWaitingCount, StringFormat='В очереди: {0}'}" Foreground="#5A5A68" FontSize="12"/>
+                    <TextBlock Text="{Binding KitchenWaitingText}" Foreground="#333340" FontSize="13" TextWrapping="Wrap"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Выдача -->
+            <Border Grid.Column="3" Background="#F7F7FA" BorderBrush="#E2E2E8" BorderThickness="1" CornerRadius="8" Padding="12">
+                <StackPanel Spacing="6">
+                    <TextBlock Text="ВЫДАЧА" FontWeight="Bold" Foreground="#1A73E8"/>
+                    <TextBlock Text="{Binding ServersHeader}" Foreground="#5A5A68" FontSize="12"/>
+                    <TextBlock Text="{Binding PickupOrderText}" FontSize="20" FontWeight="Bold" Foreground="#1E8E3E"/>
+                    <TextBlock Text="{Binding ServingLineCustomers, StringFormat='Клиентов в очереди: {0}'}" Foreground="#5A5A68" FontSize="12"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <!-- сцена -->
+        <Border Grid.Row="2" Background="#FFFFFF" BorderBrush="#E2E2E8" BorderThickness="1" CornerRadius="8"
+                Padding="6" ClipToBounds="True" MinHeight="260">
+            <Viewbox Stretch="Fill" SizeChanged="OnSceneSizeChanged">
+                <Grid Width="1150" Height="470">
+
+                    <!-- статика: зоны и мебель -->
+                    <Canvas Width="1150" Height="470" ClipToBounds="True">
+                        <Canvas.Styles>
+                            <!-- компенсация растяжения для текста -->
+                            <Style Selector="TextBlock">
+                                <Setter Property="RenderTransform" Value="{x:Static vm:MainViewModel.SceneInverseScale}"/>
+                                <Setter Property="RenderTransformOrigin" Value="0%,0%"/>
+                            </Style>
+                        </Canvas.Styles>
+
+                        <!-- разделители зон -->
+                        <Line StartPoint="190,5" EndPoint="190,465" Stroke="#E2E2E8" StrokeThickness="1"/>
+                        <Line StartPoint="360,5" EndPoint="360,465" Stroke="#E2E2E8" StrokeThickness="1" StrokeDashArray="4,4"/>
+                        <Line StartPoint="600,5" EndPoint="600,465" Stroke="#E2E2E8" StrokeThickness="1"/>
+                        <Line StartPoint="920,5" EndPoint="920,465" Stroke="#E2E2E8" StrokeThickness="1"/>
+
+                        <TextBlock Canvas.Left="20" Canvas.Top="10" Text="① Вход" Foreground="#6B6B76" FontSize="12"/>
+                        <TextBlock Canvas.Left="200" Canvas.Top="10" Text="② Линия заказов → Касса" Foreground="#6B6B76" FontSize="12"/>
+                        <TextBlock Canvas.Left="380" Canvas.Top="10" Text="③ Кухня" Foreground="#6B6B76" FontSize="12"/>
+                        <TextBlock Canvas.Left="620" Canvas.Top="10" Text="④ Линия ожидания выдачи" Foreground="#6B6B76" FontSize="12"/>
+                        <TextBlock Canvas.Left="935" Canvas.Top="10" Text="⑤ Стойка выдачи → Зона питания" Foreground="#6B6B76" FontSize="12"/>
+
+                        <!-- зона питания -->
+                        <Border Canvas.Left="1035" Canvas.Top="320" Width="105" Height="120"
+                                Background="#EAF7EE" CornerRadius="8"/>
+                        <TextBlock Canvas.Left="1050" Canvas.Top="325" Text="Зона&#10;питания" Foreground="#1E8E3E"
+                                   FontSize="12" TextWrapping="Wrap"/>
+
+                        <!-- стол кассы -->
+                        <Border Canvas.Left="200" Canvas.Top="350" Width="120" Height="14" Background="#C9C9D2" CornerRadius="4"/>
+                        <TextBlock Canvas.Left="238" Canvas.Top="366" Text="касса" Foreground="#6B6B76" FontSize="10"/>
+
+                        <!-- стойка выдачи -->
+                        <Border Canvas.Left="935" Canvas.Top="350" Width="120" Height="14" Background="#C9C9D2" CornerRadius="4"/>
+                        <TextBlock Canvas.Left="952" Canvas.Top="366" Text="стойка выдачи" Foreground="#6B6B76" FontSize="10"/>
+
+                        <!-- плита -->
+                        <Border Canvas.Left="440" Canvas.Top="90" Width="50" Height="34" Background="#F2E3D8" CornerRadius="6"/>
+                        <TextBlock Canvas.Left="446" Canvas.Top="126" Text="плита" Foreground="#6B6B76" FontSize="10"/>
+
+                        <!-- карусель -->
+                        <Border Canvas.Left="430" Canvas.Top="190" Width="340" Height="12" Background="#E4E4EC" CornerRadius="6"/>
+                        <TextBlock Canvas.Left="430" Canvas.Top="204" Text="карусель тикетов" Foreground="#6B6B76" FontSize="10"/>
+
+                        <!-- стрелки -->
+                        <TextBlock Canvas.Left="120" Canvas.Top="418" Text="→" Foreground="#9A9AA5" FontSize="20"/>
+                        <TextBlock Canvas.Left="560" Canvas.Top="418" Text="→" Foreground="#9A9AA5" FontSize="20"/>
+                        <TextBlock Canvas.Left="1000" Canvas.Top="418" Text="→" Foreground="#9A9AA5" FontSize="20"/>
+                        <TextBlock Canvas.Left="395" Canvas.Top="130" Text="↑" Foreground="#9A9AA5" FontSize="16"/>
+                    </Canvas>
+
+                    <!-- динамика -->
+
+                    <!-- персонажи -->
+                    <ItemsControl ItemsSource="{Binding StaffList}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate><Canvas/></ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.Styles>
+                            <Style Selector="ContentPresenter" x:DataType="vm:StaffViewModel">
+                                <Setter Property="Canvas.Left" Value="{Binding X}"/>
+                                <Setter Property="Canvas.Top" Value="{Binding Y}"/>
+                                <Setter Property="Transitions">
+                                    <Transitions>
+                                        <DoubleTransition Property="Canvas.Left" Duration="0:0:0.5"/>
+                                        <DoubleTransition Property="Canvas.Top" Duration="0:0:0.5"/>
+                                    </Transitions>
+                                </Setter>
+                            </Style>
+                        </ItemsControl.Styles>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="vm:StaffViewModel">
+                                <!-- компенсация растяжения, чтобы аватар оставался кругом -->
+                                <StackPanel RenderTransformOrigin="50%,50%"
+                                            RenderTransform="{x:Static vm:MainViewModel.SceneInverseScale}">
+                                <StackPanel RenderTransformOrigin="50%,50%">
+                                    <StackPanel.RenderTransform>
+                                        <ScaleTransform ScaleX="{Binding Scale}" ScaleY="{Binding Scale}">
+                                            <ScaleTransform.Transitions>
+                                                <Transitions>
+                                                    <DoubleTransition Property="ScaleX" Duration="0:0:0.25"/>
+                                                    <DoubleTransition Property="ScaleY" Duration="0:0:0.25"/>
+                                                </Transitions>
+                                            </ScaleTransform.Transitions>
+                                        </ScaleTransform>
+                                    </StackPanel.RenderTransform>
+                                    <Border Width="36" Height="36" CornerRadius="18" Background="{Binding Color}">
+                                        <TextBlock Text="{Binding Icon}" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <TextBlock Text="{Binding Label}" Foreground="#5A5A68" FontSize="10"
+                                               HorizontalAlignment="Center" Margin="0,2,0,0"/>
+                                </StackPanel>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <!-- тикеты -->
+                    <ItemsControl ItemsSource="{Binding Tickets}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate><Canvas/></ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.Styles>
+                            <Style Selector="ContentPresenter" x:DataType="vm:TicketDotViewModel">
+                                <Setter Property="Canvas.Left" Value="{Binding X}"/>
+                                <Setter Property="Canvas.Top" Value="{Binding Y}"/>
+                                <Setter Property="Transitions">
+                                    <Transitions>
+                                        <DoubleTransition Property="Canvas.Left" Duration="0:0:0.4"/>
+                                        <DoubleTransition Property="Canvas.Top" Duration="0:0:0.4"/>
+                                    </Transitions>
+                                </Setter>
+                            </Style>
+                        </ItemsControl.Styles>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="vm:TicketDotViewModel">
+                                <Border Width="40" Height="26" CornerRadius="4"
+                                        Background="{Binding Brush}"
+                                        RenderTransformOrigin="50%,50%"
+                                        RenderTransform="{x:Static vm:MainViewModel.SceneInverseScale}">
+                                    <TextBlock Text="{Binding Label}" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                               FontSize="11" FontWeight="Bold" Foreground="#1B1B22"/>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <!-- клиенты -->
+                    <ItemsControl ItemsSource="{Binding Customers}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate><Canvas/></ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.Styles>
+                            <Style Selector="ContentPresenter" x:DataType="vm:CustomerDotViewModel">
+                                <Setter Property="Canvas.Left" Value="{Binding X}"/>
+                                <Setter Property="Canvas.Top" Value="{Binding Y}"/>
+                                <Setter Property="Transitions">
+                                    <Transitions>
+                                        <DoubleTransition Property="Canvas.Left" Duration="0:0:0.45"/>
+                                        <DoubleTransition Property="Canvas.Top" Duration="0:0:0.45"/>
+                                    </Transitions>
+                                </Setter>
+                            </Style>
+                        </ItemsControl.Styles>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="vm:CustomerDotViewModel">
+                                <StackPanel RenderTransformOrigin="50%,50%"
+                                            RenderTransform="{x:Static vm:MainViewModel.SceneInverseScale}">
+                                    <Border Width="38" Height="38" CornerRadius="19" Background="{Binding Color}">
+                                        <TextBlock Text="{Binding Label}" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                   FontSize="11" Foreground="White" FontWeight="Bold"/>
+                                    </Border>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Grid>
+            </Viewbox>
+        </Border>
+
+        <!-- журнал -->
+        <Border Grid.Row="3" Background="#F7F7FA" BorderBrush="#E2E2E8" BorderThickness="1" CornerRadius="8" Padding="10">
+            <Grid RowDefinitions="Auto,*">
+                <TextBlock Grid.Row="0" Text="ЖУРНАЛ СОБЫТИЙ" FontWeight="Bold" Foreground="#1A73E8" Margin="0,0,0,6"/>
+                <ListBox Grid.Row="1" ItemsSource="{Binding LogEntries}" Background="Transparent"
+                         Foreground="#1B1B22" FontSize="12">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding}" TextWrapping="Wrap"/>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>
